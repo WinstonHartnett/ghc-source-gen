@@ -12,6 +12,8 @@ import GHC.Hs (GhcPs)
 #if MIN_VERSION_ghc(9,0,0)
 import GHC.Hs.Type as Types
 import GHC.Types.SrcLoc (unLoc)
+import GHC.Types.Basic (InlineSpec(Inlinable), InlinePragma(InlinePragma), Activation(AlwaysActive), RuleMatchInfo(FunLike))
+import GHC.Types.SourceText (SourceText(NoSourceText))
 #else
 import GHC.Hs.Type as Types
 import SrcLoc (unLoc)
@@ -70,6 +72,9 @@ sigWcType = noExt (withPlaceHolder Types.HsWC) . sigType
 
 wcType :: HsType' -> LHsWcType'
 wcType = noExt (withPlaceHolder Types.HsWC) . mkLocated
+
+defaultInlinable :: InlinePragma
+defaultInlinable = InlinePragma NoSourceText Inlinable Nothing AlwaysActive FunLike
 
 patSigType :: HsType' -> HsPatSigType'
 #if MIN_VERSION_ghc(9,2,0)

@@ -64,7 +64,7 @@ import GHC.SourceGen.Binds.Internal
 import GHC.SourceGen.Name
 import GHC.SourceGen.Name.Internal
 import GHC.SourceGen.Syntax.Internal
-import GHC.SourceGen.Type.Internal (sigWcType)
+import GHC.SourceGen.Type.Internal (sigWcType, defaultInlinable)
 
 -- | Declares the type of multiple functions or values.
 --
@@ -303,6 +303,15 @@ p <-- e = withPlaceHolder $ withEpAnnNotUsed BindStmt (builtPat p) (mkLocated e)
          noSyntaxExpr noSyntaxExpr
 #endif
 infixl 1 <--
+
+-- | An @{-# INLINABLE #-}@ pragma attached to a binding.
+--
+-- > {-# INLINABLE f #-}
+-- > =====
+-- > inlinable "f"
+inlinable :: HasValBind t => OccNameStr -> t
+inlinable f =
+    sigB $ withEpAnnNotUsed InlineSig (valueRdrName $ unqual f) defaultInlinable
 
 -- | Syntax types which can declare/define pattern bindings.
 -- For example: declarations at the top-level or in let/where clauses.
