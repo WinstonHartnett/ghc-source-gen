@@ -46,6 +46,8 @@ module GHC.SourceGen.Binds
     , (<--)
     -- * Pragmas
     , inlinable
+    , noInline'
+    , inline'
     ) where
 
 #if MIN_VERSION_ghc(9,0,0)
@@ -66,7 +68,7 @@ import GHC.SourceGen.Binds.Internal
 import GHC.SourceGen.Name
 import GHC.SourceGen.Name.Internal
 import GHC.SourceGen.Syntax.Internal
-import GHC.SourceGen.Type.Internal (sigWcType, defaultInlinable)
+import GHC.SourceGen.Type.Internal (sigWcType, inlinableP, inlineP, noInlineP)
 
 -- | Declares the type of multiple functions or values.
 --
@@ -313,7 +315,25 @@ infixl 1 <--
 -- > inlinable "f"
 inlinable :: HasValBind t => OccNameStr -> t
 inlinable f =
-    sigB $ withEpAnnNotUsed InlineSig (valueRdrName $ unqual f) defaultInlinable
+    sigB $ withEpAnnNotUsed InlineSig (valueRdrName $ unqual f) inlinableP
+
+-- | An @{-# INLINE #-}@ pragma attached to a binding.
+--
+-- > {-# INLINE f #-}
+-- > =====
+-- > inline' "f"
+inline' :: HasValBind t => OccNameStr -> t
+inline' f =
+    sigB $ withEpAnnNotUsed InlineSig (valueRdrName $ unqual f) inlineP
+
+-- | A @{-# NOINLINE #-}@ pragma attached to a binding.
+--
+-- > {-# NOINLINE f #-}
+-- > =====
+-- > noInline' "f"
+noInline' :: HasValBind t => OccNameStr -> t
+noInline' f =
+    sigB $ withEpAnnNotUsed InlineSig (valueRdrName $ unqual f) noInlineP
 
 -- | Syntax types which can declare/define pattern bindings.
 -- For example: declarations at the top-level or in let/where clauses.
