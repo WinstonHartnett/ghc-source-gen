@@ -44,6 +44,8 @@ module GHC.SourceGen.Binds
     -- * Statements
     , stmt
     , (<--)
+    -- * Pragmas
+    , inlinable
     ) where
 
 #if MIN_VERSION_ghc(9,0,0)
